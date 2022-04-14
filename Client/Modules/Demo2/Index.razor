@@ -1,0 +1,54 @@
+@using Oqtane.Demo31.Models
+@using System.ComponentModel
+@namespace Oqtane.Demo31.Demo2
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject SiteState SiteState
+
+<div>Weather information passed from Demo1 module using INotifyPropertyChanged</div>
+<br />
+
+@if (@_weather != null)
+{
+    <Pager Items="@_weather">
+        <Header>
+            <th>Date</th>
+            <th>Temp</th>
+        </Header>
+        <Row>
+            <td>@context.Date</td>
+            <td>@context.TemperatureF</td>
+        </Row>
+    </Pager>
+}
+
+@code {
+    List<WeatherForecast> _weather;
+
+    protected override void OnInitialized()
+    {
+        ((INotifyPropertyChanged)SiteState.Properties).PropertyChanged += PropertyChanged;
+    }
+
+    private void PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        // if the property which changed was named "Weather"
+        if (e.PropertyName == "Weather")
+        {
+            // get the property value and render the output
+            _weather = SiteState.Properties.Weather;
+            StateHasChanged();
+        }
+
+        // if the property ws named "Other"
+        if (e.PropertyName == "Other")
+        {
+            AddModuleMessage("Other Event", MessageType.Info);
+        }
+    }
+
+    public void Dispose()
+    {
+        ((INotifyPropertyChanged)SiteState.Properties).PropertyChanged -= PropertyChanged;
+    }
+}

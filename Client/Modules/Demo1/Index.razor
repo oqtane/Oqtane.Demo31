@@ -1,0 +1,104 @@
+@using Oqtane.Demo31.Services
+@using Oqtane.Demo31.Models
+
+@namespace Oqtane.Demo31.Demo1
+@inherits ModuleBase
+@inject IDemoService DemoService
+@inject NavigationManager NavigationManager
+@inject SiteState SiteState
+
+Ensure Secret is specified in Token Settings<br /><br />
+
+<button type="button" class="btn btn-success" @onclick="CallLocalService">Call Local Service</button>
+<br />
+@if (@_system != null)
+{
+    <br /><div>Machine Name: @_system["MachineName"]</div>
+}
+<br />
+
+<button type="button" class="btn btn-success" @onclick="CallRemoteService">Call Remote Service</button>
+<br />
+
+@if (@_weather != null)
+{
+    <Pager Items="@_weather">
+        <Header>
+            <th>Date</th>
+            <th>Temp</th>
+        </Header>
+        <Row>
+            <td>@context.Date</td>
+            <td>@context.TemperatureF</td>
+        </Row>
+    </Pager>
+}
+
+<br />
+<button type="button" class="btn btn-success" @onclick="NotifyWeather">Raise INotifyPropertyChanged Event for Weather</button>
+<br />
+
+<br />
+<button type="button" class="btn btn-success" @onclick="NotifyOther">Raise INotifyPropertyChanged Event for Other</button>
+<br />
+
+
+@code {
+    Dictionary<string, object> _system;
+    List<WeatherForecast> _weather;
+
+    private async Task CallLocalService()
+    {
+        try
+        {
+            _system = await DemoService.GetSystemInfoAsync();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Calling Local Service {Error}", ex.Message);
+            AddModuleMessage("Error Calling Local Service", MessageType.Error);
+        }
+    }
+
+    private async Task CallRemoteService()
+    {
+        try
+        {
+            _weather = await DemoService.GetWeatherForecastsAsync();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Calling Remote Service {Error}", ex.Message);
+            AddModuleMessage("Error Calling Remote Service", MessageType.Error);
+        }
+    }
+
+    private async Task NotifyWeather()
+    {
+        try
+        {
+            SiteState.Properties.Weather = _weather;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Raising Event {Error}", ex.Message);
+            AddModuleMessage("Error Raising Event", MessageType.Error);
+        }
+    }
+
+    private async Task NotifyOther()
+    {
+        try
+        {
+            SiteState.Properties.Other = "Some Other Event";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Raising Event {Error}", ex.Message);
+            AddModuleMessage("Error Raising Event", MessageType.Error);
+        }
+    }
+
+}

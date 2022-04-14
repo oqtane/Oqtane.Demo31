@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>    
+    <Version>1.0.0</Version>
+    <Product>Oqtane.Demo31</Product>
+    <Authors>Oqtane</Authors>
+    <Company>Oqtane</Company>
+    <Description>3.1 Demo</Description>
+    <Copyright>Oqtane</Copyright>
+    <AssemblyName>Oqtane.Demo31.Shared.Oqtane</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="6.0.0-preview.4.21253.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Oqtane.Shared" Version="3.1.0" />
+  </ItemGroup>
+
+</Project>
